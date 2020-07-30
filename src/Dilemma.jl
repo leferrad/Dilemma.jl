@@ -1,0 +1,3 @@
+module Dilemma
+
+end # module
