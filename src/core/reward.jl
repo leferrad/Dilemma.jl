@@ -25,6 +25,10 @@ mutable struct Reward
         optimal_arm::Union{Integer, Nothing}=nothing,
         optimal_value::Union{T, Nothing}=nothing
     ) where {T<:Real}
+        if optimal_value !== nothing && optimal_value < value
+            throw(ArgumentError("Argument 'optimal_value' must be greater or equal than 'value'"))
+        end    
+
         new(float(value), optimal_arm, optimal_value)
     end
 end
