@@ -81,7 +81,7 @@ where `t` is the time of the simulation, and some kwargs are accepted in the cal
 To check an implementation, see `RandomContextFunction`
 """
 abstract type ContextFunction <: Function end
-(c::ContextFunction)(t::Integer; kwargs...) = throw(ErrorException("Not implemented!"))
+# (c::ContextFunction)(t::Integer; kwargs...) = throw(ErrorException("Not implemented!"))
 
 
 """
