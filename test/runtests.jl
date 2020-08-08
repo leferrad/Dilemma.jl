@@ -11,6 +11,7 @@ using Test
     include("bandit/stochastic/bernoulli.jl")
     include("bandit/stochastic/beta.jl")
     include("bandit/stochastic/gaussian.jl")
+    include("bandit/stochastic/uniform.jl")
     include("policy/policy.jl")
     include("policy/basic/random.jl")
     include("policy/context_free/e_greedy.jl")
