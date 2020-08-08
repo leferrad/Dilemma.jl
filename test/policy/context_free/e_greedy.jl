@@ -19,7 +19,7 @@ function test_happy()
     action = choose(policy, t, bandit)
     @test action.choice in 1:k
 
-    context = get_dummy_context(k)
+    context = get_dummy_context()
     reward = get_dummy_reward()
     learn!(policy, t, context, action, reward)
 

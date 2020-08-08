@@ -9,7 +9,7 @@ function test_happy()
     policy = ContextualEpsilonGreedyPolicy(0.1)
 
     k, d = 5, 5
-    context = get_dummy_context(k, d)
+    context = get_dummy_context(d)
 
     initialize!(policy, context)
     @test size(policy.θ, 1) == k
@@ -35,7 +35,7 @@ function test_bad_policy_parameters_mismatch_context_k()
     policy = ContextualEpsilonGreedyPolicy(0.1)
 
     # set initial parameters with some k
-    context1 = get_dummy_context(5, 5)
+    context1 = get_dummy_context(5)
     initialize!(policy, context1)
 
     # use get_action with other k
@@ -48,11 +48,11 @@ function test_bad_policy_parameter_arm_mismatch_context_d()
     policy = ContextualEpsilonGreedyPolicy(0.1)
 
     # set initial parameters with some d
-    context1 = get_dummy_context(5, 5)
+    context1 = get_dummy_context(5)
     initialize!(policy, context1)
 
     # use get_action with other d
-    context2 = get_dummy_context(5, 3)
+    context2 = get_dummy_context(3)
     @test_throws DimensionMismatch choose(policy, 1, context2)
 end
 
