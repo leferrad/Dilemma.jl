@@ -6,9 +6,9 @@ export
     BernoulliBandit
 
 """
-    BernoulliBandit(k::Int, p=0.5; seed=123)
+    BernoulliBandit(k::Int, p=0.5; seed=123) -> StochasticBandit
 
-`Bandit` that has `k` arms following a *Bernoulli* reward distribution
+`StochasticBandit` that has `k` arms following a *Bernoulli* reward distribution
     with probability `p`. In a bandit scenario, this can be used to simulate
     binary events, such as user clicks or sales conversions from recommendations.
 
