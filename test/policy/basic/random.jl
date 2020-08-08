@@ -31,7 +31,7 @@ end
 
 """Test mismatch between an initialized Policy and a bandit"""
 function test_bad_policy_parameters_mismatch_k()
-    policy = EpsilonGreedyPolicy(0.1)
+    policy = RandomPolicy(seed=seed)
 
     # set initial parameters with some k
     bandit1 = BernoulliBandit(5, 0.5)
