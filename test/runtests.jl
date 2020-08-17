@@ -6,6 +6,7 @@ using Test
     include("core/action.jl")
     include("core/agent.jl")
     include("core/context.jl")
+    include("core/history.jl")
     include("core/reward.jl")
     include("core/util.jl")
     include("bandit/stochastic/base.jl")
