@@ -48,7 +48,11 @@ mutable struct StochasticBandit{T<:UnivariateDistribution} <: Bandit
     end
 end
 
-# To have a shorter display name
+"""
+    show(bandit::StochasticBandit)
+Prints information about bandit into the specified I/O, 
+    to have a shorter display name
+"""
 Base.show(io::IO, b::StochasticBandit) = print(io,
     "$(string(typeof(b))) with $(length(b.D)) arms: "*
     "$([string(typeof(d)) for d in b.D])");

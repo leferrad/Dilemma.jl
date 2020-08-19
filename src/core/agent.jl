@@ -191,6 +191,4 @@ end
     show(agent::Agent)
 Prints information about agent into the specified I/O.
 """
-function Base.show(io::IO, ::MIME"text/plain", agent::Agent)
-    print(io, "$(agent.name)")
-end
+Base.show(io::IO, agent::Agent) = print(io, "$(agent.name)");
