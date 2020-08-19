@@ -1,6 +1,6 @@
 using Dilemma
-using LinearAlgebra: Diagonal
-using Random: AbstractRNG, MersenneTwister
+using LinearAlgebra
+using Random
 
 export
     ContextualEpsilonGreedyTheta,
@@ -31,6 +31,7 @@ mutable struct ContextualEpsilonGreedyTheta <: Theta
     A::Array{T} where {T <: Real}
     b::Array{T} where {T <: Real}
 end # mutable struct
+
 
 @doc raw"""
     ContextualEpsilonGreedyPolicy(ϵ::Float64, seed::Integer=123)
@@ -79,6 +80,7 @@ mutable struct ContextualEpsilonGreedyPolicy <: Policy
     end
 end
 
+
 @doc raw"""
     choose(args...) -> Action
 
@@ -99,7 +101,6 @@ based on the current values of parameters and a given `Bandit` instance.
 # Examples
 ```julia
 using Dilemma
-using Distributions
 using Random
 
 # TODO: modify this example!!
@@ -107,10 +108,10 @@ using Random
 # Create Policy
 policy = ContextualEpsilonGreedyPolicy(0.1)
 # Set a dummy Context randomly
-k, d = 5, 5  # k arms, d dimensions for X
+d = 5  # d dimensions for x
 Random.seed!(123)
-X = rand(Uniform(0, 1), k, d)
-context = Context(k, d, X)
+x = rand(1, d)
+context = Context(x)
 # Get action for some t and the given context
 t = 1
 get_action(policy, t, context)
@@ -147,7 +148,7 @@ function choose(policy::ContextualEpsilonGreedyPolicy, t::Integer, bandit::Bandi
         for arm in 1:bandit.k
             if size(policy.θ[arm].A) != (context.d, context.d)
                 throw(DimensionMismatch(
-                    "Policy parameters θ for arm $i with dimension $(size(policy.θ[i].A)) "*
+                    "Policy parameters θ for arm $arm with dimension $(size(policy.θ[arm].A)) "*
                     "does not match context dimension $((context.d, context.d))"
                 ))
             end
@@ -189,10 +190,10 @@ using Random
 # Create Policy
 policy = ContextualEpsilonGreedyPolicy(0.1)
 # Set a dummy Context randomly
-k, d = 5, 5  # k arms, d dimensions for X
+d = 5  # d dimensions for x
 Random.seed!(123)
-X = rand(Uniform(0, 1), k, d)
-context = Context(k, d, X)
+x = rand(1, d)
+context = Context(x)
 # Set initial parameters of Policy
 initialize!(policy, context)
 
@@ -207,12 +208,15 @@ policy.θ[1].A
 ```
 """
 function initialize!(policy::ContextualEpsilonGreedyPolicy, bandit::Bandit)
-    # TODO: check this better
     if ! hasproperty(bandit, :d)
         context = observe(bandit, 1)
         d = context.d
     else
         d = bandit.d
+    end
+
+    if d === nothing
+        throw(ErrorException("Bandit has no value defined for dimension parameter 'd'"))
     end
 
     A = convert(Matrix, Diagonal(ones(d, d)))  # diagonal matrix of d x d
@@ -247,6 +251,11 @@ function learn!(
     action::Action,
     reward::Reward
 )
+
+    if policy.θ === nothing
+        throw(ErrorException("Policy parameters must be initialized with a Bandit before calling learn!()"))
+    end
+
     arm = action.choice
     reward = reward.value
     Xa = collect(context)
