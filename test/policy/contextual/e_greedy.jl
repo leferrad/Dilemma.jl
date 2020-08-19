@@ -19,9 +19,9 @@ Dilemma.pull(bandit::TestContextualBandit, t::Integer, action::Action) = get_dum
 
 
 """Happy test of ContextualEpsilonGreedyPolicy methods"""
-function test_happy_e_greedy()
+function test_happy()
     t = 1
-    policy = ContextualEpsilonGreedyPolicy(0.1)
+    policy = ContextualEpsilonGreedyPolicy(0.1, seed=seed)
 
     k, d = 3, 5
     bandit = TestContextualBandit(k, d)
@@ -45,6 +45,33 @@ function test_happy_e_greedy()
     policy2 = ContextualEpsilonGreedyPolicy(0.1)
     action2 = choose(policy2, t, bandit)
     learn!(policy2, t, context, action2, reward)
+end
+
+
+"""Happy test of ContextualEpsilonGreedyPolicy in a loop of learning"""
+function test_happy_loop()
+    t = 1
+    t = 1
+    policy = ContextualEpsilonGreedyPolicy(0.1, seed=seed)
+
+    k, d = 3, 5
+    bandit = TestContextualBandit(k, d)
+
+    initialize!(policy, bandit)
+
+    traces = []
+
+    for i in 1:10
+        action = choose(policy, t, bandit)
+        context = observe(bandit, t)
+        reward = pull(bandit, t, action)
+        learn!(policy, t, context, action, reward)
+
+        push!(traces, (t=t, context=context, action=action, reward=reward))
+    end
+
+    # Test more than 1 action selected
+    @test length(Set([tr[:action] for tr in traces])) > 1
 end
 
 
@@ -96,10 +123,11 @@ function test_bad_learn_policy_not_initialized()
     @test_throws ErrorException learn!(policy, t, context, action, reward)
 end
 
-@testset "e_greedy" begin
+@testset "contextual_e_greedy" begin
     @testset "unit" begin
         @testset "happy" begin
-            test_happy_e_greedy()
+            test_happy()
+            test_happy_loop()
         end
         @testset "bad" begin
             test_bad_policy_parameters_mismatch_k()

@@ -58,6 +58,18 @@ function test_reset_agent()
 end
 
 
+"""Test show call"""
+function test_agent_show()
+    k, p = 3, 0.5
+    agent = Agent(RandomPolicy(seed=seed), BernoulliBandit(k, p, seed=seed))
+    println("Testing show()...")
+    show(agent)
+    println("")
+end
+
+# TODO: test do_step! when reward does not have optimal_value (regret = 0.0)
+
+
 """Test seed methods"""
 function test_seed_agent()
     # Create agent
@@ -129,6 +141,7 @@ end
             test_reset_agent()
             test_seed_agent()
             test_do_step_agent()
+            test_agent_show()
         end
         @testset "bad" begin
             test_step_bad()

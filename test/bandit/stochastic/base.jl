@@ -35,6 +35,15 @@ end
 
 # TODO: test arms
 
+"""Test show call"""
+function test_bandit_show()
+    D = [Uniform(), Bernoulli()]
+    bandit = StochasticBandit(D)
+    println("Testing show()...")
+    show(bandit)
+    println("")
+end
+
 """Test bad action in pull() call"""
 function test_bad_action_pull()
     D = [Uniform(), Bernoulli()]
@@ -51,6 +60,7 @@ end
         @testset "happy" begin
             test_bandit_happy()
             test_bandit_happy_offset()
+            test_bandit_show()
         end
         @testset "bad" begin
             test_bad_action_pull()

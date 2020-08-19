@@ -1,15 +1,17 @@
+using Dilemma
 using Distributions
 using Test
 
-using Dilemma
+seed = 123
+
 
 """Happy test of EpsilonGreedyPolicy methods"""
 function test_happy()
     t = 1
-    policy = EpsilonGreedyPolicy(0.1)
+    policy = EpsilonGreedyPolicy(0.1, seed=seed)
 
     k, p = 5, 0.5
-    bandit = BernoulliBandit(k, p)
+    bandit = BernoulliBandit(k, p, seed=seed)
 
     initialize!(policy, bandit)
     @test size(policy.θ, 1) == k
@@ -25,9 +27,39 @@ function test_happy()
 
     @test old_θ != policy.θ
 
+    # Test choose & learn! without calling initialize
+    policy2 = EpsilonGreedyPolicy(0.1, seed=seed)
+    action2 = choose(policy2, t, bandit)
+    learn!(policy2, t, context, action2, reward)
+
 end
 
-# TODO: test happy when parameters were not set yet
+"""Happy test of EpsilonGreedyPolicy in a loop of learning"""
+function test_happy_loop()
+    t = 1
+    t = 1
+    policy = EpsilonGreedyPolicy(0.1, seed=seed)
+
+    k, p = 5, 0.5
+    bandit = BernoulliBandit(k, p, seed=seed)
+
+    initialize!(policy, bandit)
+
+    traces = []
+
+    for i in 1:10
+        action = choose(policy, t, bandit)
+        context = observe(bandit, t)
+        reward = pull(bandit, t, action)
+        learn!(policy, t, context, action, reward)
+
+        push!(traces, (t=t, context=context, action=action, reward=reward))
+    end
+
+    # Test more than 1 action selected
+    @test length(Set([tr[:action] for tr in traces])) > 1
+end
+
 
 """Test mismatch between an initialized Policy and a bandit"""
 function test_bad_policy_parameters_mismatch_k()
@@ -42,10 +74,12 @@ function test_bad_policy_parameters_mismatch_k()
     @test_throws DimensionMismatch choose(policy, 1, bandit2)
 end
 
-@testset "e_greedy" begin
+
+@testset "context_free_e_greedy" begin
     @testset "unit" begin
         @testset "happy" begin
             test_happy()
+            test_happy_loop()
         end
         @testset "bad" begin
             test_bad_policy_parameters_mismatch_k()
