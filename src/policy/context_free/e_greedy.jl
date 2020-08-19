@@ -61,7 +61,7 @@ mutable struct EpsilonGreedyPolicy <: Policy
     is_oracle::Bool
     rng::AbstractRNG
 
-    function EpsilonGreedyPolicy(ϵ::Float64, seed::Integer=123)
+    function EpsilonGreedyPolicy(ϵ::Float64; seed::Integer=123)
         rng = MersenneTwister(seed)
         new(ϵ, nothing, false, rng)
     end
