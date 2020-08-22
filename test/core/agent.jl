@@ -7,8 +7,8 @@ seed = 123
 """Happy test of Step"""
 function test_step_happy()
     # create valid Steps
-    t1, c1, a1, r1, = 1, Context(), Action(1), Reward(1.0)
-    s1 = Step(t1, c1, a1, r1)
+    t1, c1, a1, r1, rg1 = 1, Context(), Action(1), Reward(1.0), 0.0
+    s1 = Step(t1, c1, a1, r1, rg1)
 end
 
 """Happy test of Agent"""
@@ -106,6 +106,14 @@ function test_seed_agent()
 end
 
 
+"""Test set_name!()"""
+function test_set_name()
+    k, p = 3, 0.5
+    agent = Agent(RandomPolicy(seed=seed), BernoulliBandit(k, p, seed=seed), name="name")
+    set_name!(agent, "new_name")
+    @test agent.name == "new_name"
+end
+
 """Test do_step!()"""
 function test_do_step_agent()
     # Create agent
@@ -129,7 +137,7 @@ end
 """Bad path test of Step"""
 function test_step_bad()    
     # negative t
-    @test_throws ArgumentError Step(-1, Context(), Action(1), Reward(1.0))
+    @test_throws ArgumentError Step(-1, Context(), Action(1), Reward(1.0), 0.0)
 end
 
 
@@ -142,6 +150,7 @@ end
             test_seed_agent()
             test_do_step_agent()
             test_agent_show()
+            test_set_name()
         end
         @testset "bad" begin
             test_step_bad()

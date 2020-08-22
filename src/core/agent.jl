@@ -8,11 +8,12 @@ export
     Step,
     reset_agent!,
     do_step!,
-    set_seed!
+    set_seed!,
+    set_name!
 
 
 """
-    Step(t, context, action, reward)
+    Step(t, context, action, reward, regret)
 
 Represents the result of an step taken by an `Agent` in a simulation.
 
@@ -21,6 +22,7 @@ Represents the result of an step taken by an `Agent` in a simulation.
 - `context::Union{Context, Nothing}`: context obtained from `Bandit` in the given time `t`.
 - `action::Union{Action, Nothing}`: action chosen by `Policy`, applied to `Bandit`.
 - `reward::Union{Reward, Nothing}`: reward obtained after applying action in `Bandit`.
+- `regret::Union{Float64, Nothing}`: regret obtained from reward information.
 ```
 """
 mutable struct Step
@@ -28,18 +30,20 @@ mutable struct Step
     context::Union{Context, Nothing}
     action::Union{Action, Nothing}
     reward::Union{Reward, Nothing}
+    regret::Union{Float64, Nothing}
 
     function Step(
         t::Integer, 
         context::Union{Context, Nothing}, 
         action::Union{Action, Nothing},
-        reward::Union{Reward, Nothing}
+        reward::Union{Reward, Nothing},
+        regret::Union{Float64, Nothing}
     )
         if t < 0
             throw(ArgumentError("Argument 't' must be >= 0"))
         end    
 
-        new(t, context, action, reward)
+        new(t, context, action, reward, regret)
     end
 end
 
@@ -146,7 +150,7 @@ function do_step!(agent::Agent)
     end
 
     # Record step
-    step = Step(agent.t, context, action, reward) 
+    step = Step(agent.t, context, action, reward, regret) 
 
     # Increase time counter
     agent.t += 1
@@ -154,6 +158,17 @@ function do_step!(agent::Agent)
     return step
 end
 
+
+"""
+    set_name!(agent::Agent, name::String)
+
+Set a new name for the `Agent`   
+
+# Arguments
+- `agent::Agent`: agent to rename
+- `name::Integer`: new name
+"""
+set_name!(agent::Agent, name::String) = agent.name = name
 
 """
     set_seed!(agent::Agent, seed::Integer=123)
