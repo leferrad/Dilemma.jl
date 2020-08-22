@@ -8,6 +8,7 @@ using Test
     include("core/context.jl")
     include("core/history.jl")
     include("core/reward.jl")
+    include("core/simulator.jl")
     include("core/util.jl")
     include("bandit/stochastic/base.jl")
     include("bandit/stochastic/bernoulli.jl")
